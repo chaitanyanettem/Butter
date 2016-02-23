@@ -1,8 +1,11 @@
 package chaitanya.im.butter;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,29 +15,46 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String TMDBKey = Keys.TMDB;
+    private static RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private static RecyclerView moviePosters;
+    private static ArrayList<DataModel> data;
+    static View.OnClickListener myOnClickListener;
+    String _TMDBKey = Keys.TMDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myOnClickListener = new MyOnClickListener();
+
+        moviePosters = (RecyclerView) findViewById(R.id.movie_posters);
+        moviePosters.setHasFixedSize(true); //TODO: figure out sethasfixedsize
+
+        layoutManager = new VarColumnGridLayoutManager(this, 200);
+        moviePosters.setLayoutManager(layoutManager);
+        moviePosters.setItemAnimator(new DefaultItemAnimator());
+
+
+        for (int i=0; i<11; i++)
+            MyData.urlArray[i] = "http://i.imgur.com/DvpvklR.png";
+
+        data = new ArrayList<>();
+        for (int i = 0; i < MyData.nameArray.length; i++) {
+            data.add(new DataModel(MyData.nameArray[i], MyData.urlArray[i], MyData.id[i]));
+        }
+        adapter = new MyAdapter(data, this);
+        moviePosters.setAdapter(adapter);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,10 +62,44 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        ImageView imageView = (ImageView)findViewById(R.id.imageView2);
-        Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+    }
+
+    public class VarColumnGridLayoutManager extends GridLayoutManager {
+
+        private int minItemWidth;
+
+        public VarColumnGridLayoutManager(Context context, int minItemWidth) {
+            super(context, 1);
+            this.minItemWidth = minItemWidth;
+        }
+
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler,
+                                     RecyclerView.State state) {
+            updateSpanCount();
+            super.onLayoutChildren(recycler, state);
+        }
+
+        private void updateSpanCount() {
+            Log.d("TAG", String.valueOf(getWidth()));
+            int spanCount = getWidth() / minItemWidth;
+            if (spanCount < 2) {
+                spanCount = 2;
+            }
+            this.setSpanCount(spanCount);
+        }}
+
+
+    private static class MyOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Log.d("TAG", "clicked");
+        }
+
     }
 
     @Override
@@ -86,17 +140,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_discover) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_favourites) {
 
         }
 
