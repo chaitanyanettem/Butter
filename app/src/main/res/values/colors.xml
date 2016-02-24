@@ -3,6 +3,7 @@
     <color name="colorPrimary">#F44336</color>
     <color name="colorPrimaryDark">#F44336</color>
     <color name="colorAccent">#ffcc15</color>
+    <color name="colorWhite">#FFF</color>
     <color name="darkBackgroundMain">#1b2021</color>
     <color name="posterCardBackground">#393939</color>
 </resources>

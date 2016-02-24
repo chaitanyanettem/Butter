@@ -1,7 +1,8 @@
-package chaitanya.im.butter;
+package chaitanya.im.butter.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
+import chaitanya.im.butter.DataModel;
+import chaitanya.im.butter.MainActivity;
+import chaitanya.im.butter.R;
+
+public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.ViewHolder>{
     private ArrayList<DataModel> _dataSet;
     Context _context;
+    public static View.OnClickListener myOnClickListener = new MyOnClickListener();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView _ImageView;
@@ -28,7 +34,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
 
     }
 
-    public MyAdapter(ArrayList<DataModel> data, Context context) {
+    public PosterGridAdapter(ArrayList<DataModel> data, Context context) {
         _dataSet = data;
         _context = context;
     }
@@ -38,7 +44,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.layout_postercard, parent, false);
 
-        view.setOnClickListener(MainActivity.myOnClickListener);
+        view.setOnClickListener(myOnClickListener);
         return new ViewHolder(view);
     }
 
@@ -55,5 +61,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     @Override
     public int getItemCount() {
         return _dataSet.size();
+    }
+
+    private static class MyOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Log.d("TAG", "clicked");
+        }
+
     }
 }

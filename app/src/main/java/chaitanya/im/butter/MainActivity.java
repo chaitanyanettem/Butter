@@ -18,6 +18,8 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import chaitanya.im.butter.Adapters.PosterGridAdapter;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView moviePosters;
     private static ArrayList<DataModel> data;
-    static View.OnClickListener myOnClickListener;
+
     String _TMDBKey = Keys.TMDB;
 
     @Override
@@ -33,7 +35,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myOnClickListener = new MyOnClickListener();
 
         moviePosters = (RecyclerView) findViewById(R.id.movie_posters);
         moviePosters.setHasFixedSize(true); //TODO: figure out sethasfixedsize
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < MyData.nameArray.length; i++) {
             data.add(new DataModel(MyData.nameArray[i], MyData.urlArray[i], MyData.id[i]));
         }
-        adapter = new MyAdapter(data, this);
+        adapter = new PosterGridAdapter(data, this);
         moviePosters.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    // For autocalculating number of spans.
     public class VarColumnGridLayoutManager extends GridLayoutManager {
 
         private int minItemWidth;
@@ -92,15 +94,6 @@ public class MainActivity extends AppCompatActivity
             this.setSpanCount(spanCount);
         }}
 
-
-    private static class MyOnClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            Log.d("TAG", "clicked");
-        }
-
-    }
 
     @Override
     public void onBackPressed() {
