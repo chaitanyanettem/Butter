@@ -23,12 +23,14 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView _ImageView;
-        public TextView _TextView;
+        public TextView _MovieTitle;
+        public TextView _ExtraInfo;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            _TextView = (TextView) itemView.findViewById(R.id.item_name);
+            _MovieTitle = (TextView) itemView.findViewById(R.id.movie_title);
             _ImageView = (ImageView) itemView.findViewById(R.id.item_image);
+            _ExtraInfo = (TextView) itemView.findViewById(R.id.extra_info);
         }
 
     }
@@ -50,10 +52,12 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int listPosition) {
 
-        TextView textViewName = holder._TextView;
+        TextView textViewMovieTitle = holder._MovieTitle;
         ImageView imageView = holder._ImageView;
+        TextView textViewExtraInfo = holder._ExtraInfo;
 
-        textViewName.setText(_dataSet.get(listPosition).getMovieName());
+        textViewMovieTitle.setText(_dataSet.get(listPosition).getMovieName());
+        textViewExtraInfo.setText(_dataSet.get(listPosition).getExtraInfo());
         Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + _dataSet.get(listPosition).getPosterURL());
         Picasso.with(_context)
                 .load(_dataSet.get(listPosition).getPosterURL())

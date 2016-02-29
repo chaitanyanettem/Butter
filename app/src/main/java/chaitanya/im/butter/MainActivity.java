@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity
         popularMovies = new APICall(BASE_URL);
 
         data = new ArrayList<>();
-        for (int i = 0; i < popularMovies._size; i++) {
-            data.add(new GridDataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
-        }
         adapter = new PosterGridAdapter(data, this);
         moviePosters.setAdapter(adapter);
 
@@ -68,7 +65,11 @@ public class MainActivity extends AppCompatActivity
 
     public static void updateGrid() {
         for (int i = 0; i < popularMovies._size; i++) {
-            data.add(new GridDataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
+            data.add(new GridDataModel(
+                    popularMovies._titles.get(i),
+                    popularMovies._posterURLs.get(i),
+                    popularMovies._releaseDate.get(i),
+                    popularMovies._id.get(i)));
         }
         adapter.notifyDataSetChanged();
     }

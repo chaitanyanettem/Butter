@@ -5,11 +5,13 @@ public class GridDataModel {
     String _movieName;
     Integer _id;
     String _posterURL;
+    String _extraInfo;
 
-    public GridDataModel(String movieName, String posterURL, Integer id) {
+    public GridDataModel(String movieName, String posterURL, String extraInfo, Integer id) {
         _movieName = movieName;
         _id = id;
         _posterURL = posterURL;
+        _extraInfo = extraInfo;
     }
 
     public String getMovieName() {
@@ -22,5 +24,9 @@ public class GridDataModel {
 
     public Integer getId() {
         return _id;
+    }
+
+    public String getExtraInfo() {
+        return _extraInfo;
     }
 }
