@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import chaitanya.im.butter.Adapters.PosterGridAdapter;
-import chaitanya.im.butter.Data.DataModel;
+import chaitanya.im.butter.Data.GridDataModel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity
     private static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView moviePosters;
-    private static ArrayList<DataModel> data;
+    private static ArrayList<GridDataModel> data;
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static APICall popularMovies;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         data = new ArrayList<>();
         for (int i = 0; i < popularMovies._size; i++) {
-            data.add(new DataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
+            data.add(new GridDataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
         }
         adapter = new PosterGridAdapter(data, this);
         moviePosters.setAdapter(adapter);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
     public static void updateGrid() {
         for (int i = 0; i < popularMovies._size; i++) {
-            data.add(new DataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
+            data.add(new GridDataModel(popularMovies._titles.get(i), popularMovies._posterURLs.get(i), popularMovies._id.get(i)));
         }
         adapter.notifyDataSetChanged();
     }
@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity
                 spanCount = 2;
             }
             this.setSpanCount(spanCount);
-        }}
+        }
+    }
 
 
     @Override

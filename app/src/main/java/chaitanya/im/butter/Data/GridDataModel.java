@@ -1,12 +1,12 @@
 package chaitanya.im.butter.Data;
 
-public class DataModel {
+public class GridDataModel {
 
     String _movieName;
     Integer _id;
     String _posterURL;
 
-    public DataModel(String movieName, String posterURL, Integer id) {
+    public GridDataModel(String movieName, String posterURL, Integer id) {
         _movieName = movieName;
         _id = id;
         _posterURL = posterURL;

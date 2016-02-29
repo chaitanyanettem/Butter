@@ -3,7 +3,6 @@ package chaitanya.im.butter;
 import java.util.ArrayList;
 import java.util.List;
 
-import chaitanya.im.butter.Data.Keys;
 import chaitanya.im.butter.Data.MoviePopular;
 import chaitanya.im.butter.Data.MoviePopularResults;
 import retrofit2.Call;
@@ -55,7 +54,7 @@ public class APICall {
         _titles = new ArrayList<>();
         _id = new ArrayList<>();
         _size = _results.size();
-        String basePosterURL = "https://image.tmdb.org/t/p/w185";
+        String basePosterURL = "https://image.tmdb.org/t/p/w342";
         for (int i = 0; i<_results.size(); i++) {
             _titles.add(_results.get(i).getTitle());
             _posterURLs.add(basePosterURL + _results.get(i).getPosterPath());
