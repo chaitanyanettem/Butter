@@ -1,17 +1,26 @@
 package chaitanya.im.butter.Data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class MovieNowPlaying {
 
+public class MoviePopular {
+
+    @SerializedName("page")
+    @Expose
     private Integer page;
-    private List<MovieNowPlayingResults> results = new ArrayList<MovieNowPlayingResults>();
+    @SerializedName("results")
+    @Expose
+    private List<MoviePopularResults> results = new ArrayList<>();
+    @SerializedName("total_results")
+    @Expose
     private Integer totalResults;
+    @SerializedName("total_pages")
+    @Expose
     private Integer totalPages;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      *
@@ -36,7 +45,7 @@ public class MovieNowPlaying {
      * @return
      * The results
      */
-    public List<MovieNowPlayingResults> getResults() {
+    public List<MoviePopularResults> getResults() {
         return results;
     }
 
@@ -45,7 +54,7 @@ public class MovieNowPlaying {
      * @param results
      * The results
      */
-    public void setResults(List<MovieNowPlayingResults> results) {
+    public void setResults(List<MoviePopularResults> results) {
         this.results = results;
     }
 
@@ -83,14 +92,6 @@ public class MovieNowPlaying {
      */
     public void setTotalPages(Integer totalPages) {
         this.totalPages = totalPages;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

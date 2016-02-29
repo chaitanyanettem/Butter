@@ -1,19 +1,67 @@
 package chaitanya.im.butter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import chaitanya.im.butter.Data.Keys;
+import chaitanya.im.butter.Data.MoviePopular;
+import chaitanya.im.butter.Data.MoviePopularResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APICall {
     public static String _BASE_URL;
-    public static int _VERSION;
-    public static Retrofit _retrofit;
+    private static Retrofit _retrofit;
+    private static TMDBEndPoint _tmdb;
+    private Call<MoviePopular> _call;
+    private MoviePopular _response;
+    private List<MoviePopularResults> _results;
+    public List<Integer> _id;
+    public List<String> _titles;
+    public List<String> _posterURLs;
+    public int _size;
 
-    public APICall(String BASE_URL, int VERSION) {
+
+    public APICall(String BASE_URL) {
+        //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
-        _VERSION = VERSION;
         _retrofit = new Retrofit.Builder()
-                .baseUrl(_BASE_URL + _VERSION)
+                .baseUrl(_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        _tmdb = _retrofit.create(TMDBEndPoint.class);
+        _call = _tmdb.loadMovies(Keys.TMDB);
+
+        _call.enqueue(new Callback<MoviePopular>() {
+            @Override
+            public void onResponse(Call<MoviePopular> call, Response<MoviePopular> response) {
+                _response = response.body();
+                _results = _response.getResults();
+                populate_fields();
+            }
+
+            @Override
+            public void onFailure(Call<MoviePopular> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void populate_fields() {
+        _posterURLs = new ArrayList<>();
+        _titles = new ArrayList<>();
+        _id = new ArrayList<>();
+        _size = _results.size();
+        String basePosterURL = "https://image.tmdb.org/t/p/w185";
+        for (int i = 0; i<_results.size(); i++) {
+            _titles.add(_results.get(i).getTitle());
+            _posterURLs.add(basePosterURL + _results.get(i).getPosterPath());
+            _id.add(_results.get(i).getId());
+        }
+        MainActivity.updateGrid();
+
     }
 }

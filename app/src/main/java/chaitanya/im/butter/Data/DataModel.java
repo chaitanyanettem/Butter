@@ -1,12 +1,12 @@
-package chaitanya.im.butter;
+package chaitanya.im.butter.Data;
 
 public class DataModel {
 
     String _movieName;
-    int _id;
+    Integer _id;
     String _posterURL;
 
-    public DataModel(String movieName, String posterURL, int id) {
+    public DataModel(String movieName, String posterURL, Integer id) {
         _movieName = movieName;
         _id = id;
         _posterURL = posterURL;
@@ -20,7 +20,7 @@ public class DataModel {
         return _posterURL;
     }
 
-    public int getId() {
+    public Integer getId() {
         return _id;
     }
 }

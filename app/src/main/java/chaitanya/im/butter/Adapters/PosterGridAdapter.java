@@ -13,8 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import chaitanya.im.butter.DataModel;
-import chaitanya.im.butter.MainActivity;
+import chaitanya.im.butter.Data.DataModel;
 import chaitanya.im.butter.R;
 
 public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.ViewHolder>{
@@ -55,7 +54,8 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         ImageView imageView = holder._ImageView;
 
         textViewName.setText(_dataSet.get(listPosition).getMovieName());
-        Picasso.with(_context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+        Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + _dataSet.get(listPosition).getPosterURL());
+        Picasso.with(_context).load(_dataSet.get(listPosition).getPosterURL()).into(imageView);
     }
 
     @Override

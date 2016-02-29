@@ -1,12 +1,12 @@
 package chaitanya.im.butter;
 
-import android.telecom.Call;
+import retrofit2.Call;
 
-import okhttp3.ResponseBody;
+import chaitanya.im.butter.Data.MoviePopular;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-public class TMDBEndPoint {
-    @GET("movie/popular?api_key=")
-    Call<ResponseBody> getPopular(@Path())
+public interface TMDBEndPoint {
+    @GET("movie/popular")
+    Call<MoviePopular> loadMovies(@Query("api_key") String TMDBAPI);
 }
