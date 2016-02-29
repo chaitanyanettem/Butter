@@ -59,8 +59,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
                 .load(_dataSet.get(listPosition).getPosterURL())
                 .placeholder(R.drawable.image_placeholder)
                 .into(imageView);
-        Picasso.with(_context)
-                .setIndicatorsEnabled(true);
     }
 
     @Override

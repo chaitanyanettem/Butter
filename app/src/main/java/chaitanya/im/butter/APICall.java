@@ -5,6 +5,8 @@ import java.util.List;
 
 import chaitanya.im.butter.Data.MoviePopular;
 import chaitanya.im.butter.Data.MoviePopularResults;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,9 +15,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APICall {
     public static String _BASE_URL;
-    private static Retrofit _retrofit;
-    private static TMDBEndPoint _tmdb;
-    private Call<MoviePopular> _call;
     private MoviePopular _response;
     private List<MoviePopularResults> _results;
     public List<Integer> _id;
@@ -27,12 +26,18 @@ public class APICall {
     public APICall(String BASE_URL) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
-        _retrofit = new Retrofit.Builder()
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        Retrofit _retrofit = new Retrofit.Builder()
                 .baseUrl(_BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        _tmdb = _retrofit.create(TMDBEndPoint.class);
-        _call = _tmdb.loadMovies(Keys.TMDB);
+        TMDBEndPoint _tmdb = _retrofit.create(TMDBEndPoint.class);
+        Call<MoviePopular> _call = _tmdb.loadMovies("popular", Keys.TMDB, null, "hi");
 
         _call.enqueue(new Callback<MoviePopular>() {
             @Override
