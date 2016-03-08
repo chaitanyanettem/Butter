@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import chaitanya.im.butter.Activity.MainActivity;
 import chaitanya.im.butter.Data.MoviePopular;
 import chaitanya.im.butter.Data.MoviePopularResults;
 import okhttp3.OkHttpClient;
@@ -24,11 +25,13 @@ public class APICall {
     public List<String> _posterURLs;
     public int _size;
     public List<String> _releaseDate;
+    int posterW;
 
 
-    public APICall(String BASE_URL) {
+    public APICall(String BASE_URL, int posterW) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
+        this.posterW = posterW;
 
         // Logging for retrofit
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -67,7 +70,7 @@ public class APICall {
         String[] sdate;
         GregorianCalendar calendar;
 
-        String basePosterURL = "https://image.tmdb.org/t/p/w342";
+        String basePosterURL = "https://image.tmdb.org/t/p/w" + posterW;
         for (int i = 0; i<_results.size(); i++) {
             _titles.add(_results.get(i).getTitle());
             _posterURLs.add(basePosterURL + _results.get(i).getPosterPath());

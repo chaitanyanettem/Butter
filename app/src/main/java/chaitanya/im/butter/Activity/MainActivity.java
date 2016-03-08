@@ -1,10 +1,12 @@
-package chaitanya.im.butter;
+package chaitanya.im.butter.Activity;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,11 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import chaitanya.im.butter.APICall;
 import chaitanya.im.butter.Adapters.PosterGridAdapter;
 import chaitanya.im.butter.Data.GridDataModel;
+import chaitanya.im.butter.R;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +35,9 @@ public class MainActivity extends AppCompatActivity
     private static ArrayList<GridDataModel> data;
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static APICall popularMovies;
+    public final static String TAG = "MainActivity.java";
+    int posterW = 0;
+    int spanCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +46,18 @@ public class MainActivity extends AppCompatActivity
 
 
         moviePosters = (RecyclerView) findViewById(R.id.movie_posters);
-        moviePosters.setHasFixedSize(true); //TODO: figure out sethasfixedsize
+        moviePosters.setHasFixedSize(true);
 
-        layoutManager = new VarColumnGridLayoutManager(this, 200);
+        getSpanAndPosterW();
+
+        layoutManager = new GridLayoutManager(this, spanCount);
         moviePosters.setLayoutManager(layoutManager);
         moviePosters.setItemAnimator(new DefaultItemAnimator());
 
-        popularMovies = new APICall(BASE_URL);
+        popularMovies = new APICall(BASE_URL, posterW);
 
         data = new ArrayList<>();
-        adapter = new PosterGridAdapter(data, this);
+        adapter = new PosterGridAdapter(data, this, posterW);
         moviePosters.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -72,6 +83,43 @@ public class MainActivity extends AppCompatActivity
                     popularMovies._id.get(i)));
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void getSpanAndPosterW(){
+        if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)
+                == Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            spanCount = 5;
+        }
+        else {
+            spanCount = 3;
+        }
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int density = metrics.densityDpi;
+
+        if (spanCount == 4 && density <240) {
+            Log.i(TAG, "low density screen = " +
+                    density +
+                    ". Setting grid poster size to w185.");
+            posterW = 185;
+            spanCount = 3;
+
+        } else {
+            Log.i(TAG, "density = " +
+                    density +
+                    ". Setting grid poster size to w342.");
+            posterW = 342;
+        }
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            if (spanCount == 5)
+                spanCount = 7;
+
+            else if (spanCount == 3 && posterW != 185)
+                spanCount = 5;
+        }
     }
 
     // For autocalculating number of spans.

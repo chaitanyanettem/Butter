@@ -19,6 +19,7 @@ import chaitanya.im.butter.R;
 public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.ViewHolder>{
     private ArrayList<GridDataModel> _dataSet;
     Context _context;
+    int _posterW;
     public static View.OnClickListener myOnClickListener = new MyOnClickListener();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -35,9 +36,10 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
 
     }
 
-    public PosterGridAdapter(ArrayList<GridDataModel> data, Context context) {
+    public PosterGridAdapter(ArrayList<GridDataModel> data, Context context, int posterW) {
         _dataSet = data;
         _context = context;
+        _posterW = posterW;
     }
 
     @Override
@@ -55,13 +57,20 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         TextView textViewMovieTitle = holder._MovieTitle;
         ImageView imageView = holder._ImageView;
         TextView textViewExtraInfo = holder._ExtraInfo;
+        int placeholder;
 
         textViewMovieTitle.setText(_dataSet.get(listPosition).getMovieName());
         textViewExtraInfo.setText(_dataSet.get(listPosition).getExtraInfo());
         Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + _dataSet.get(listPosition).getPosterURL());
+
+        if (_posterW == 185)
+            placeholder = R.drawable.placeholder_small;
+        else
+            placeholder = R.drawable.placeholder;
+
         Picasso.with(_context)
                 .load(_dataSet.get(listPosition).getPosterURL())
-                .placeholder(R.drawable.image_placeholder)
+                .placeholder(placeholder)
                 .into(imageView);
     }
 
