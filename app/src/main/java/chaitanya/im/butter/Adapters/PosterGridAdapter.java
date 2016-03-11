@@ -57,21 +57,35 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         TextView textViewMovieTitle = holder._MovieTitle;
         ImageView imageView = holder._ImageView;
         TextView textViewExtraInfo = holder._ExtraInfo;
+        String posterURL = _dataSet.get(listPosition).getPosterURL();
         int placeholder;
 
         textViewMovieTitle.setText(_dataSet.get(listPosition).getMovieName());
         textViewExtraInfo.setText(_dataSet.get(listPosition).getExtraInfo());
-        Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + _dataSet.get(listPosition).getPosterURL());
+        Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + posterURL);
 
         if (_posterW == 185)
             placeholder = R.drawable.placeholder_small;
         else
             placeholder = R.drawable.placeholder;
 
-        Picasso.with(_context)
-                .load(_dataSet.get(listPosition).getPosterURL())
-                .placeholder(placeholder)
-                .into(imageView);
+        if (posterURL.endsWith("null")) {
+            Picasso.with(_context)
+                    .load(R.drawable.poster_unavailable)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(placeholder)
+                    .into(imageView);
+        }
+        else {
+            Picasso.with(_context)
+                    .load(posterURL)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(placeholder)
+                    .into(imageView);
+        }
+
     }
 
     @Override

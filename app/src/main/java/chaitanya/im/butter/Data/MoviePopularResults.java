@@ -50,6 +50,10 @@ public class MoviePopularResults {
     @Expose
     private Double voteAverage;
 
+    private String finalPosterURLs;
+
+    private String releaseDateString;
+
     /**
      *
      * @return
@@ -302,5 +306,20 @@ public class MoviePopularResults {
         this.voteAverage = voteAverage;
     }
 
+    public String getFinalPosterURLs() {
+        return finalPosterURLs;
+    }
+
+    public String getReleaseDateString() {
+        return releaseDateString;
+    }
+
+    public void setFinalPosterURLs(String finalPosterURLs) {
+        this.finalPosterURLs = finalPosterURLs;
+    }
+
+    public void setReleaseDateString(String releaseDateString) {
+        this.releaseDateString = releaseDateString;
+    }
 
 }

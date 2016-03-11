@@ -1,5 +1,7 @@
 package chaitanya.im.butter;
 
+import android.support.annotation.Nullable;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -19,16 +21,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APICall {
     public static String _BASE_URL;
     private MoviePopular _response;
-    private List<MoviePopularResults> _results;
-    public List<Integer> _id;
-    public List<String> _titles;
-    public List<String> _posterURLs;
-    public int _size;
-    public List<String> _releaseDate;
+    public List<MoviePopularResults> _results;
     int posterW;
 
 
-    public APICall(String BASE_URL, int posterW) {
+    public APICall(String BASE_URL, String endpoint, int posterW) {
+        this(BASE_URL, endpoint, posterW, null);
+    }
+
+    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
         this.posterW = posterW;
@@ -44,8 +45,8 @@ public class APICall {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         TMDBEndPoint _tmdb = _retrofit.create(TMDBEndPoint.class);
-        Call<MoviePopular> _call = _tmdb.loadMovies("popular", Keys._TMDB, null, "hi");
 
+        Call<MoviePopular> _call = _tmdb.loadMovies(endpoint, Keys._TMDB, page, null);
         _call.enqueue(new Callback<MoviePopular>() {
             @Override
             public void onResponse(Call<MoviePopular> call, Response<MoviePopular> response) {
@@ -62,31 +63,29 @@ public class APICall {
     }
 
     public void populate_fields() {
-        _posterURLs = new ArrayList<>();
-        _titles = new ArrayList<>();
-        _id = new ArrayList<>();
-        _releaseDate = new ArrayList<>();
-        _size = _results.size();
         String[] sdate;
         GregorianCalendar calendar;
 
         String basePosterURL = "https://image.tmdb.org/t/p/w" + posterW;
         for (int i = 0; i<_results.size(); i++) {
-            _titles.add(_results.get(i).getTitle());
-            _posterURLs.add(basePosterURL + _results.get(i).getPosterPath());
-            _id.add(_results.get(i).getId());
+            _results.get(i)
+                    .setFinalPosterURLs(basePosterURL + _results.get(i).getPosterPath());
 
             sdate = _results.get(i).getReleaseDate().split("-");
+
             calendar = new GregorianCalendar(
                             Integer.parseInt(sdate[0]),
-                            Integer.parseInt(sdate[1]),
+                            Integer.parseInt(sdate[1]) - 1,
+                            //Why on earth does month start
+                            // with 0 in the GregorianCalendar?!!!
                             Integer.parseInt(sdate[2]));
 
-            _releaseDate.add(DateFormat
-                    .getDateInstance()
-                    .format(calendar.getTime()));
+            _results.get(i)
+                    .setReleaseDateString(DateFormat
+                            .getDateInstance()
+                            .format(calendar.getTime()));
         }
-        MainActivity.updateGrid();
+        MainActivity.updateGrid(false);
 
     }
 }

@@ -16,13 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import chaitanya.im.butter.APICall;
 import chaitanya.im.butter.Adapters.PosterGridAdapter;
 import chaitanya.im.butter.Data.GridDataModel;
+import chaitanya.im.butter.EndlessScrollListener;
 import chaitanya.im.butter.R;
 
 
@@ -30,10 +30,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private GridLayoutManager layoutManager;
     private static RecyclerView moviePosters;
     private static ArrayList<GridDataModel> data;
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
+    private String endpoint = "popular";
     private static APICall popularMovies;
     public final static String TAG = "MainActivity.java";
     int posterW = 0;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         moviePosters.setLayoutManager(layoutManager);
         moviePosters.setItemAnimator(new DefaultItemAnimator());
 
-        popularMovies = new APICall(BASE_URL, posterW);
+        popularMovies = new APICall(BASE_URL, endpoint, posterW);
 
         data = new ArrayList<>();
         adapter = new PosterGridAdapter(data, this, posterW);
@@ -72,15 +73,31 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        EndlessScrollListener mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                Log.d(TAG, "Load MOAR THINGS!!!");
+                popularMovies = new APICall(BASE_URL, endpoint, posterW, page);
+            }
+        };
+
+        moviePosters.addOnScrollListener(mEndlessScrollListener);
     }
 
-    public static void updateGrid() {
-        for (int i = 0; i < popularMovies._size; i++) {
+
+
+
+
+    public static void updateGrid(boolean clear) {
+        if(clear)
+            data.clear();
+        for (int i = 0; i < popularMovies._results.size(); i++) {
             data.add(new GridDataModel(
-                    popularMovies._titles.get(i),
-                    popularMovies._posterURLs.get(i),
-                    popularMovies._releaseDate.get(i),
-                    popularMovies._id.get(i)));
+                    popularMovies._results.get(i).getTitle(),
+                    popularMovies._results.get(i).getFinalPosterURLs(),
+                    popularMovies._results.get(i).getReleaseDateString(),
+                    popularMovies._results.get(i).getId()));
         }
         adapter.notifyDataSetChanged();
     }
@@ -89,24 +106,19 @@ public class MainActivity extends AppCompatActivity
         if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)
                 == Configuration.SCREENLAYOUT_SIZE_LARGE) {
             spanCount = 5;
+            posterW = 342;
         }
         else {
             spanCount = 3;
+            posterW = 185;
         }
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int density = metrics.densityDpi;
 
-        if (spanCount == 4 && density <240) {
-            Log.i(TAG, "low density screen = " +
-                    density +
-                    ". Setting grid poster size to w185.");
-            posterW = 185;
-            spanCount = 3;
-
-        } else {
-            Log.i(TAG, "density = " +
+        if (posterW == 185 && density>300) {
+            Log.i(TAG, "high density screen = " +
                     density +
                     ". Setting grid poster size to w342.");
             posterW = 342;
@@ -117,7 +129,7 @@ public class MainActivity extends AppCompatActivity
             if (spanCount == 5)
                 spanCount = 7;
 
-            else if (spanCount == 3 && posterW != 185)
+            else if (spanCount == 3 && density>=240)
                 spanCount = 5;
         }
     }
