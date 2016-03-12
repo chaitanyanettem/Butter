@@ -2,14 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
-            android:id="@+id/nav_discover"
-            android:icon="@drawable/ic_menu_compass"
-            android:title="@string/new_and_popular" />
-        <item
-            android:id="@+id/nav_favourites"
+            android:id="@+id/nav_popular"
             android:icon="@drawable/ic_menu_star_circle"
-            android:title="@string/favourites" />
+            android:title="@string/popular"/>
+
+
+        <item
+            android:id="@+id/nav_now_playing"
+            android:icon="@drawable/ic_menu_compass"
+            android:title="@string/now_playing" />
+
+        <item
+            android:id="@+id/nav_upcoming"
+            android:icon="@drawable/ic_menu_compass"
+            android:title="@string/upcoming" />
+
     </group>
 
 </menu>

@@ -3,7 +3,6 @@ package chaitanya.im.butter;
 import android.support.annotation.Nullable;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 

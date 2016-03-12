@@ -34,9 +34,11 @@ public class MainActivity extends AppCompatActivity
     private static RecyclerView moviePosters;
     private static ArrayList<GridDataModel> data;
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
-    private String endpoint = "popular";
+    private String endpoint = "upcoming";
     private static APICall popularMovies;
+    private int currentNavSelection = R.id.nav_popular;
     public final static String TAG = "MainActivity.java";
+    private EndlessScrollListener mEndlessScrollListener;
     int posterW = 0;
     int spanCount = 0;
 
@@ -73,8 +75,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(currentNavSelection);
 
-        EndlessScrollListener mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
+        mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.d(TAG, "Load MOAR THINGS!!!");
@@ -92,12 +95,14 @@ public class MainActivity extends AppCompatActivity
     public static void updateGrid(boolean clear) {
         if(clear)
             data.clear();
-        for (int i = 0; i < popularMovies._results.size(); i++) {
-            data.add(new GridDataModel(
-                    popularMovies._results.get(i).getTitle(),
-                    popularMovies._results.get(i).getFinalPosterURLs(),
-                    popularMovies._results.get(i).getReleaseDateString(),
-                    popularMovies._results.get(i).getId()));
+        else {
+            for (int i = 0; i < popularMovies._results.size(); i++) {
+                data.add(new GridDataModel(
+                        popularMovies._results.get(i).getTitle(),
+                        popularMovies._results.get(i).getFinalPosterURLs(),
+                        popularMovies._results.get(i).getReleaseDateString(),
+                        popularMovies._results.get(i).getId()));
+            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -200,10 +205,19 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_discover) {
-            // Handle the camera action
-        } else if (id == R.id.nav_favourites) {
+        if (id == R.id.nav_popular) {
+            endpoint = "popular";
+        } else if (id == R.id.nav_now_playing) {
+            endpoint = "now_playing";
+        } else if (id == R.id.nav_upcoming) {
+            endpoint = "upcoming";
+        }
 
+        if (id != currentNavSelection) {
+            currentNavSelection = id;
+            updateGrid(true);
+            popularMovies = new APICall(BASE_URL, endpoint, posterW);
+            mEndlessScrollListener.setCurrentPage(1);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
