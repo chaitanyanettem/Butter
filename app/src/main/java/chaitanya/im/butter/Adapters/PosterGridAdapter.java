@@ -1,11 +1,14 @@
 package chaitanya.im.butter.Adapters;
 
 import android.content.Context;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,33 +16,40 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import chaitanya.im.butter.Activity.MainActivity;
 import chaitanya.im.butter.Data.GridDataModel;
 import chaitanya.im.butter.R;
 
 public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.ViewHolder>{
     private ArrayList<GridDataModel> _dataSet;
     Context _context;
+    private ActionBar _actionBar;
     int _posterW;
-    public static View.OnClickListener myOnClickListener = new MyOnClickListener();
+    public View.OnClickListener myOnClickListener = new MyOnClickListener();
+    public final static String TAG = "PosterGridAdapter.java";
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView _ImageView;
         public TextView _MovieTitle;
         public TextView _ExtraInfo;
+        public TextView _MovieID;
 
         public ViewHolder(View itemView) {
             super(itemView);
             _MovieTitle = (TextView) itemView.findViewById(R.id.movie_title);
             _ImageView = (ImageView) itemView.findViewById(R.id.item_image);
             _ExtraInfo = (TextView) itemView.findViewById(R.id.extra_info);
+            _MovieID = (TextView) itemView.findViewById(R.id.movie_id);
+
         }
 
     }
 
-    public PosterGridAdapter(ArrayList<GridDataModel> data, Context context, int posterW) {
+    public PosterGridAdapter(ArrayList<GridDataModel> data, Context context, int posterW, ActionBar actionBar) {
         _dataSet = data;
         _context = context;
         _posterW = posterW;
+        _actionBar = actionBar;
     }
 
     @Override
@@ -57,12 +67,15 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         TextView textViewMovieTitle = holder._MovieTitle;
         ImageView imageView = holder._ImageView;
         TextView textViewExtraInfo = holder._ExtraInfo;
-        String posterURL = _dataSet.get(listPosition).getPosterURL();
-        int placeholder;
+        TextView textViewMovieID = holder._MovieID;
 
+        String posterURL = _dataSet.get(listPosition).getPosterURL();
         textViewMovieTitle.setText(_dataSet.get(listPosition).getMovieName());
         textViewExtraInfo.setText(_dataSet.get(listPosition).getExtraInfo());
+        textViewMovieID.setText(String.valueOf(_dataSet.get(listPosition).getId()));
         Log.d("PosterGridAdapter", "in onbindviewholder() URL = " + posterURL);
+
+        int placeholder;
 
         if (_posterW == 185)
             placeholder = R.drawable.placeholder_small;
@@ -93,11 +106,19 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         return _dataSet.size();
     }
 
-    private static class MyOnClickListener implements View.OnClickListener {
+    private class MyOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             Log.d("TAG", "clicked");
+            TextView clickedMovieID = (TextView) v.findViewById(R.id.movie_id);
+            TextView clickedMovieTitle = (TextView) v.findViewById(R.id.movie_title);
+
+            String id = clickedMovieID.getText().toString();
+            String title = clickedMovieTitle.getText().toString();
+            Log.d(TAG, id + ":" + title);
+            MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            //_actionBar.hide();
         }
 
     }

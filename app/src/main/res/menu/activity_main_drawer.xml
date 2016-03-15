@@ -8,6 +8,10 @@
             android:icon="@drawable/ic_menu_star_circle"
             android:title="@string/popular"/>
 
+        <item
+            android:id="@+id/nav_top_rated"
+            android:icon="@drawable/ic_menu_star_circle"
+            android:title="@string/top_rated"/>
 
         <item
             android:id="@+id/nav_now_playing"

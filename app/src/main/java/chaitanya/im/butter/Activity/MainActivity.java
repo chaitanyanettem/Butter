@@ -2,7 +2,12 @@ package chaitanya.im.butter.Activity;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +21,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
@@ -23,6 +36,7 @@ import chaitanya.im.butter.APICall;
 import chaitanya.im.butter.Adapters.PosterGridAdapter;
 import chaitanya.im.butter.Data.GridDataModel;
 import chaitanya.im.butter.EndlessScrollListener;
+import chaitanya.im.butter.HiddenBottomSheetBehavior;
 import chaitanya.im.butter.R;
 
 
@@ -34,11 +48,14 @@ public class MainActivity extends AppCompatActivity
     private static RecyclerView moviePosters;
     private static ArrayList<GridDataModel> data;
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
-    private String endpoint = "upcoming";
+    private String endpoint = "popular";
     private static APICall popularMovies;
     private int currentNavSelection = R.id.nav_popular;
     public final static String TAG = "MainActivity.java";
     private EndlessScrollListener mEndlessScrollListener;
+    private String activity_title = "Popular";
+    public static HiddenBottomSheetBehavior bottomSheetBehavior;
+    private CoordinatorLayout coordinatorLayout;
     int posterW = 0;
     int spanCount = 0;
 
@@ -59,12 +76,14 @@ public class MainActivity extends AppCompatActivity
 
         popularMovies = new APICall(BASE_URL, endpoint, posterW);
 
-        data = new ArrayList<>();
-        adapter = new PosterGridAdapter(data, this, posterW);
-        moviePosters.setAdapter(adapter);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        data = new ArrayList<>();
+        adapter = new PosterGridAdapter(data, this, posterW, getSupportActionBar());
+        moviePosters.setAdapter(adapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -72,10 +91,15 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        View bottomSheet = findViewById(R.id.bottomSheet);
+        coordinatorLayout = (CoordinatorLayout) bottomSheet;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            coordinatorLayout.setElevation(R.dimen.appbar_elevation);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(currentNavSelection);
+        setTitle(activity_title);
 
         mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
             @Override
@@ -86,14 +110,36 @@ public class MainActivity extends AppCompatActivity
         };
 
         moviePosters.addOnScrollListener(mEndlessScrollListener);
+
+        bottomSheetBehavior = (HiddenBottomSheetBehavior) HiddenBottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    Log.d(TAG, "BottomSheet Expanded.");
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Log.d(TAG, "BottomSheet Collapsed.");
+                    //getSupportActionBar().show();
+                    MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    Log.d(TAG, "BottomSheet Hidden.");
+                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    Log.d(TAG, "BottomSheet Dragging.");
+                } else if (newState == BottomSheetBehavior.STATE_SETTLING) {
+                    Log.d(TAG, "BottomSheet settling.");
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
     }
 
 
-
-
-
     public static void updateGrid(boolean clear) {
-        if(clear)
+        if (clear)
             data.clear();
         else {
             for (int i = 0; i < popularMovies._results.size(); i++) {
@@ -107,13 +153,12 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
     }
 
-    public void getSpanAndPosterW(){
+    public void getSpanAndPosterW() {
         if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)
                 == Configuration.SCREENLAYOUT_SIZE_LARGE) {
             spanCount = 5;
             posterW = 342;
-        }
-        else {
+        } else {
             spanCount = 3;
             posterW = 185;
         }
@@ -122,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int density = metrics.densityDpi;
 
-        if (posterW == 185 && density>300) {
+        if (posterW == 185 && density > 300) {
             Log.i(TAG, "high density screen = " +
                     density +
                     ". Setting grid poster size to w342.");
@@ -134,11 +179,10 @@ public class MainActivity extends AppCompatActivity
             if (spanCount == 5)
                 spanCount = 7;
 
-            else if (spanCount == 3 && density>=240)
+            else if (spanCount == 3 && density >= 240)
                 spanCount = 5;
         }
     }
-
     // For autocalculating number of spans.
     public class VarColumnGridLayoutManager extends GridLayoutManager {
 
@@ -207,10 +251,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_popular) {
             endpoint = "popular";
+            activity_title = "Popular";
+        } else if (id == R.id.nav_top_rated) {
+            endpoint = "top_rated";
+            activity_title = "Top Rated";
         } else if (id == R.id.nav_now_playing) {
             endpoint = "now_playing";
+            activity_title = "In Theatres Now";
         } else if (id == R.id.nav_upcoming) {
             endpoint = "upcoming";
+            activity_title = "Upcoming";
         }
 
         if (id != currentNavSelection) {
@@ -218,6 +268,7 @@ public class MainActivity extends AppCompatActivity
             updateGrid(true);
             popularMovies = new APICall(BASE_URL, endpoint, posterW);
             mEndlessScrollListener.setCurrentPage(1);
+            setTitle(activity_title);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
