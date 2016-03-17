@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         moviePosters.setLayoutManager(layoutManager);
         moviePosters.setItemAnimator(new DefaultItemAnimator());
 
-        popularMovies = new APICall(BASE_URL, endpoint, posterW);
+        popularMovies = new APICall(BASE_URL, endpoint, posterW, null);
 
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
 
         data = new ArrayList<>();
-        adapter = new PosterGridAdapter(data, this, posterW, getSupportActionBar());
+        adapter = new PosterGridAdapter(data, this, posterW, this);
         moviePosters.setAdapter(adapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -137,7 +137,8 @@ public class MainActivity extends AppCompatActivity
             for (int i = 0; i < popularMovies._results.size(); i++) {
                 data.add(new GridDataModel(
                         popularMovies._results.get(i).getTitle(),
-                        popularMovies._results.get(i).getFinalPosterURLs(),
+                        popularMovies._results.get(i).getFinalPosterURL(),
+                        popularMovies._results.get(i).getFinalBackdropURL(),
                         popularMovies._results.get(i).getReleaseDateString(),
                         popularMovies._results.get(i).getId()));
             }
@@ -202,6 +203,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public static void updateBottomSheet() {
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -258,7 +263,7 @@ public class MainActivity extends AppCompatActivity
         if (id != currentNavSelection) {
             currentNavSelection = id;
             updateGrid(true);
-            popularMovies = new APICall(BASE_URL, endpoint, posterW);
+            popularMovies = new APICall(BASE_URL, endpoint, posterW, null);
             mEndlessScrollListener.setCurrentPage(1);
             setTitle(activity_title);
         }

@@ -6,8 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/darkBackgroundMain"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activity.MainActivity"
+    tools:context=".activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/dummy_image_view"
+        android:visibility="invisible"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

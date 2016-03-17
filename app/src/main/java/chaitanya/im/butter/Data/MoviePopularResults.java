@@ -50,9 +50,9 @@ public class MoviePopularResults {
     @Expose
     private Double voteAverage;
 
-    private String finalPosterURLs;
-
+    private String finalPosterURL;
     private String releaseDateString;
+    private String finalBackdropURL;
 
     /**
      *
@@ -306,20 +306,29 @@ public class MoviePopularResults {
         this.voteAverage = voteAverage;
     }
 
-    public String getFinalPosterURLs() {
-        return finalPosterURLs;
+    public String getFinalPosterURL() {
+        return finalPosterURL;
     }
 
     public String getReleaseDateString() {
         return releaseDateString;
     }
 
-    public void setFinalPosterURLs(String finalPosterURLs) {
-        this.finalPosterURLs = finalPosterURLs;
+
+    public String getFinalBackdropURL() {
+        return finalBackdropURL;
+    }
+
+    public void setFinalPosterURL(String finalPosterURL) {
+        this.finalPosterURL = finalPosterURL;
     }
 
     public void setReleaseDateString(String releaseDateString) {
         this.releaseDateString = releaseDateString;
+    }
+
+    public void setFinalBackdropURL(String finalPosterURL) {
+        this.finalBackdropURL = finalPosterURL;
     }
 
 }

@@ -24,5 +24,4 @@ public class HiddenBottomSheetBehavior<V extends View> extends BottomSheetBehavi
             The trick is to utilise onRestoreInstance to call setInternalState immediately and indirectly
          */
     }
-
 }

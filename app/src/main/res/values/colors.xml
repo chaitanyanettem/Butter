@@ -4,9 +4,11 @@
     <color name="colorPrimaryDark">#F44336</color>
     <color name="colorAccent">#dd2c00</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorLightRed">#ebff6e40</color>
+    <color name="colorScrim">#F44336</color>
     <color name="colorTranslucentWhite">#e2b9b9b9</color>
     <color name="darkBackgroundMain">#1b2021</color>
     <color name="darkBackgroundMainTranslucent">#dd1b2021</color>
+    <color name="cardBackground">#52595b</color>
     <color name="posterCardBackground">#393939</color>
+    <color name="colorDetailsLabel">#a9a9a9</color>
 </resources>

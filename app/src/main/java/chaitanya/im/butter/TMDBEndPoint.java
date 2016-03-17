@@ -1,5 +1,6 @@
 package chaitanya.im.butter;
 
+import chaitanya.im.butter.Data.MovieDetail;
 import retrofit2.Call;
 
 import chaitanya.im.butter.Data.MoviePopular;
@@ -16,4 +17,9 @@ public interface TMDBEndPoint {
 
     @GET("movie/latest")
     Call<MoviePopular> latestMovies(@Query("api_key") String TMDBAPI);
+
+    @GET("movie/{id}")
+    Call<MovieDetail> getMovieWithID(@Path("id") String id,
+                                     @Query("api_key") String TMDBKey,
+                                     @Query("append_to_response") String append);
 }
