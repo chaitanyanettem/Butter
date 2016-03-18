@@ -2,14 +2,18 @@ package chaitanya.im.butter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -117,8 +121,12 @@ public class APICall {
         final TextView datetext = (TextView) _activity.findViewById(R.id.bottomsheet_date);
         final TextView runningtime = (TextView) _activity.findViewById(R.id.bottomsheet_running_time);
         final TextView description = (TextView) _activity.findViewById(R.id.bottomsheet_description);
+        final NestedScrollView nestedScrollView = (NestedScrollView) _activity.findViewById(R.id.nestedScrollView);
+
         trailerURL = "http://www.youtube.com/watch?v=" +
                 detail.getVideos().getResults().get(0).getKey();
+
+        nestedScrollView.scrollTo(0, 0);
 
         Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +151,7 @@ public class APICall {
         //toolbar.setTitle(detail.getTitle());
         //toolbar.inflateMenu(R.menu.bottomsheet_menu);
 
+        Log.d("APICall.java", "about to picasso");
 
         String backdropURL = "https://image.tmdb.org/t/p/w780" + detail.getBackdropPath();
         Picasso.with(_context)
@@ -152,17 +161,21 @@ public class APICall {
                 .into(backdrop_image_view, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess(){
+                        Log.d("APICall.java", "Success");
                         MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         MainActivity.swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(){
-//                        Picasso.with(_context)
-//                                .load(R.drawable.placeholder_backdrop)
-//                                .fit()
-//                                .centerCrop()
-//                                .into(backdrop_image_view);
+                        Picasso.with(_context)
+                                .load(R.drawable.placeholder_backdrop)
+                                .fit()
+                                .centerCrop()
+                                .into(backdrop_image_view);
+
+                        MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        MainActivity.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
     }

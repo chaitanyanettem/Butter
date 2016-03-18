@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
     public final static String TAG = "MainActivity.java";
     private EndlessScrollListener mEndlessScrollListener;
     private String activity_title = "Popular";
-    public static HiddenBottomSheetBehavior bottomSheetBehavior;
+    public static BottomSheetBehavior bottomSheetBehavior;
     public static String trailerURL;
     private CoordinatorLayout coordinatorLayout;
     public static SwipeRefreshLayout swipeRefreshLayout;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 
         moviePosters.addOnScrollListener(mEndlessScrollListener);
 
-        bottomSheetBehavior = (HiddenBottomSheetBehavior) HiddenBottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -285,6 +285,9 @@ public class MainActivity extends AppCompatActivity
             mEndlessScrollListener.setCurrentPage(1);
             setTitle(activity_title);
         }
+
+        if (bottomSheetState == 1)
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
