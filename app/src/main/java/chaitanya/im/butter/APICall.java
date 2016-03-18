@@ -1,10 +1,13 @@
 package chaitanya.im.butter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,11 +36,15 @@ public class APICall {
     AppCompatActivity _activity;
     Context _context;
     int posterW;
+    boolean _refresh;
+    String trailerURL;
 
-    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page) {
+    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page, boolean refresh) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
         this.posterW = posterW;
+        _refresh = refresh;
+        MainActivity.swipeRefreshLayout.setRefreshing(true);
 
         // Logging for retrofit
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -74,6 +81,8 @@ public class APICall {
         _activity = activity;
         _context = context;
 
+        MainActivity.swipeRefreshLayout.setRefreshing(true);
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -98,6 +107,9 @@ public class APICall {
             }
         });
     }
+    public void onButtonClick() {
+        _activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailerURL)));
+    }
 
     public void updateBottomSheet(final MovieDetail detail) {
         final TextView title = (TextView) _activity.findViewById(R.id.bottomsheet_title);
@@ -105,6 +117,27 @@ public class APICall {
         final TextView datetext = (TextView) _activity.findViewById(R.id.bottomsheet_date);
         final TextView runningtime = (TextView) _activity.findViewById(R.id.bottomsheet_running_time);
         final TextView description = (TextView) _activity.findViewById(R.id.bottomsheet_description);
+        trailerURL = "http://www.youtube.com/watch?v=" +
+                detail.getVideos().getResults().get(0).getKey();
+
+        Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonClick();
+            }
+        });
+
+        title.setText(detail.getTitle());
+        String[] sdate;
+        sdate = detail.getReleaseDate().split("-");
+        GregorianCalendar calendar = new GregorianCalendar(
+                Integer.parseInt(sdate[0]),
+                Integer.parseInt(sdate[1]) - 1,
+                Integer.parseInt(sdate[2]));
+        datetext.setText(DateFormat.getDateInstance().format(calendar.getTime()));
+        runningtime.setText(detail.getRuntime().toString() + " minutes");
+        description.setText(detail.getOverview());
 
         //Toolbar toolbar =(Toolbar) _activity.findViewById(R.id.bottomsheet_toolbar);
         //toolbar.setTitle(detail.getTitle());
@@ -120,29 +153,20 @@ public class APICall {
                     @Override
                     public void onSuccess(){
                         MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-                        title.setText(detail.getTitle());
-                        String[] sdate;
-                        sdate = detail.getReleaseDate().split("-");
-                        GregorianCalendar calendar = new GregorianCalendar(
-                                Integer.parseInt(sdate[0]),
-                                Integer.parseInt(sdate[1]) - 1,
-                                Integer.parseInt(sdate[2]));
-                        datetext.setText(DateFormat.getDateInstance().format(calendar.getTime()));
-                        runningtime.setText(detail.getRuntime().toString() + " minutes");
-                        description.setText(detail.getOverview());
+                        MainActivity.swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(){
-                        Picasso.with(_context)
-                                .load(R.drawable.placeholder_backdrop)
-                                .fit()
-                                .centerCrop()
-                                .into(backdrop_image_view);
+//                        Picasso.with(_context)
+//                                .load(R.drawable.placeholder_backdrop)
+//                                .fit()
+//                                .centerCrop()
+//                                .into(backdrop_image_view);
                     }
                 });
     }
+
 
     public void populatePosterGrid() {
         String[] sdate;
@@ -170,7 +194,7 @@ public class APICall {
                             .getDateInstance()
                             .format(calendar.getTime()));
         }
-        MainActivity.updateGrid(false);
+        MainActivity.updateGrid(_refresh);
     }
 
 

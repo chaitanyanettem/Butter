@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:behavior_hideable="true"
+    android:fitsSystemWindows="true"
     app:layout_behavior="chaitanya.im.butter.HiddenBottomSheetBehavior">
 
     <android.support.design.widget.AppBarLayout
@@ -98,6 +99,24 @@
                 android:layout_margin="1.5dp"
                 android:textIsSelectable="true"
                 android:textAppearance="@style/DetailScreenMedium"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="#a6949494"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomsheet_trailer_button"
+                android:drawablePadding="4dp"
+                android:text="Trailer"
+                android:textColor="@color/colorWhite"
+                android:drawableLeft="@drawable/ic_youtube_play_white_24dp"
+                android:theme="@style/TrailerButton"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
 
         </LinearLayout>
 

@@ -1,12 +1,15 @@
 package chaitanya.im.butter.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -47,7 +51,10 @@ public class MainActivity extends AppCompatActivity
     private EndlessScrollListener mEndlessScrollListener;
     private String activity_title = "Popular";
     public static HiddenBottomSheetBehavior bottomSheetBehavior;
+    public static String trailerURL;
     private CoordinatorLayout coordinatorLayout;
+    public static SwipeRefreshLayout swipeRefreshLayout;
+    int bottomSheetState=-1;
     int posterW = 0;
     int spanCount = 0;
 
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         moviePosters = (RecyclerView) findViewById(R.id.movie_posters);
         moviePosters.setHasFixedSize(true);
 
@@ -66,8 +73,7 @@ public class MainActivity extends AppCompatActivity
         moviePosters.setLayoutManager(layoutManager);
         moviePosters.setItemAnimator(new DefaultItemAnimator());
 
-        popularMovies = new APICall(BASE_URL, endpoint, posterW, null);
-
+        popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.d(TAG, "Load MOAR THINGS!!!");
-                popularMovies = new APICall(BASE_URL, endpoint, posterW, page);
+                popularMovies = new APICall(BASE_URL, endpoint, posterW, page, false);
             }
         };
 
@@ -108,16 +114,21 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetState = 1;
                     Log.d(TAG, "BottomSheet Expanded.");
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetState = -1;
                     Log.d(TAG, "BottomSheet Collapsed.");
                     //getSupportActionBar().show();
                     MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    bottomSheetState = -1;
                     Log.d(TAG, "BottomSheet Hidden.");
                 } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    bottomSheetState = -1;
                     Log.d(TAG, "BottomSheet Dragging.");
                 } else if (newState == BottomSheetBehavior.STATE_SETTLING) {
+                    bottomSheetState = -1;
                     Log.d(TAG, "BottomSheet settling.");
                 }
             }
@@ -127,23 +138,30 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-    }
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                mEndlessScrollListener.setCurrentPage(1);
+                popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
+            }
+        });
+    }
 
     public static void updateGrid(boolean clear) {
         if (clear)
             data.clear();
-        else {
-            for (int i = 0; i < popularMovies._results.size(); i++) {
-                data.add(new GridDataModel(
-                        popularMovies._results.get(i).getTitle(),
-                        popularMovies._results.get(i).getFinalPosterURL(),
-                        popularMovies._results.get(i).getFinalBackdropURL(),
-                        popularMovies._results.get(i).getReleaseDateString(),
-                        popularMovies._results.get(i).getId()));
-            }
+        for (int i = 0; i < popularMovies._results.size(); i++) {
+            data.add(new GridDataModel(
+                    popularMovies._results.get(i).getTitle(),
+                    popularMovies._results.get(i).getFinalPosterURL(),
+                    popularMovies._results.get(i).getFinalBackdropURL(),
+                    popularMovies._results.get(i).getReleaseDateString(),
+                    popularMovies._results.get(i).getId()));
         }
         adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     public void getSpanAndPosterW() {
@@ -207,12 +225,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (bottomSheetState == 1) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
             super.onBackPressed();
         }
@@ -262,8 +281,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id != currentNavSelection) {
             currentNavSelection = id;
-            updateGrid(true);
-            popularMovies = new APICall(BASE_URL, endpoint, posterW, null);
+            popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
             mEndlessScrollListener.setCurrentPage(1);
             setTitle(activity_title);
         }

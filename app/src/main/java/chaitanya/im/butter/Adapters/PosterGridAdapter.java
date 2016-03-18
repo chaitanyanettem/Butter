@@ -100,10 +100,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
                     .centerCrop()
                     .placeholder(placeholder)
                     .into(imageView);
-
-            Picasso.with(_context)
-                    .load(backdropURL)
-                    .into(dummyImageView);
         }
 
     }
