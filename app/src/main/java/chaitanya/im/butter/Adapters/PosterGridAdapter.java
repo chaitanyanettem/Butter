@@ -1,9 +1,6 @@
 package chaitanya.im.butter.Adapters;
 
 import android.content.Context;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -69,10 +66,8 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
         ImageView imageView = holder._ImageView;
         TextView textViewExtraInfo = holder._ExtraInfo;
         TextView textViewMovieID = holder._MovieID;
-        ImageView dummyImageView = (ImageView) _activity.findViewById(R.id.dummy_image_view);
 
         String posterURL = _dataSet.get(listPosition).getPosterURL();
-        String backdropURL = _dataSet.get(listPosition).getBackdropURL();
         textViewMovieTitle.setText(_dataSet.get(listPosition).getMovieName());
         textViewExtraInfo.setText(_dataSet.get(listPosition).getExtraInfo());
         textViewMovieID.setText(String.valueOf(_dataSet.get(listPosition).getId()));
@@ -118,7 +113,6 @@ public class PosterGridAdapter extends RecyclerView.Adapter<PosterGridAdapter.Vi
             String id = clickedMovieID.getText().toString();
             new APICall("http://api.themoviedb.org/3/", id, _activity, _activity);
             Log.d(TAG, id);
-            //_actionBar.hide();
         }
 
     }

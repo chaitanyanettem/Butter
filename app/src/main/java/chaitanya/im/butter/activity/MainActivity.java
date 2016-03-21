@@ -1,9 +1,7 @@
 package chaitanya.im.butter.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,15 +22,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-
 import java.util.ArrayList;
 
 import chaitanya.im.butter.APICall;
 import chaitanya.im.butter.Adapters.PosterGridAdapter;
 import chaitanya.im.butter.Data.GridDataModel;
 import chaitanya.im.butter.EndlessScrollListener;
-import chaitanya.im.butter.HiddenBottomSheetBehavior;
 import chaitanya.im.butter.R;
 
 
@@ -219,10 +214,6 @@ public class MainActivity extends AppCompatActivity
             }
             this.setSpanCount(spanCount);
         }
-    }
-
-    public static void updateBottomSheet() {
-
     }
 
     @Override

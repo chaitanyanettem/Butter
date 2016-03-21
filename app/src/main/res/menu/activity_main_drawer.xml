@@ -5,22 +5,22 @@
 
         <item
             android:id="@+id/nav_popular"
-            android:icon="@drawable/ic_menu_star_circle"
+            android:icon="@drawable/ic_flames"
             android:title="@string/popular"/>
 
         <item
             android:id="@+id/nav_top_rated"
-            android:icon="@drawable/ic_menu_star_circle"
+            android:icon="@drawable/ic_star_grey600_24dp"
             android:title="@string/top_rated"/>
 
         <item
             android:id="@+id/nav_now_playing"
-            android:icon="@drawable/ic_menu_compass"
+            android:icon="@drawable/ic_presentation_play_grey600_24dp"
             android:title="@string/now_playing" />
 
         <item
             android:id="@+id/nav_upcoming"
-            android:icon="@drawable/ic_menu_compass"
+            android:icon="@drawable/ic_calendar_clock_grey600_24dp"
             android:title="@string/upcoming" />
 
     </group>
