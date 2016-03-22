@@ -11,4 +11,5 @@
     <color name="cardBackground">#52595b</color>
     <color name="posterCardBackground">#393939</color>
     <color name="colorDetailsLabel">#a9a9a9</color>
+    <color name="rippleColor">#ff5252</color>
 </resources>

@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         moviePosters = (RecyclerView) findViewById(R.id.movie_posters);
         moviePosters.setHasFixedSize(true);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                R.color.darkBackgroundMain,
+                R.color.rippleColor);
 
         getSpanAndPosterW();
 

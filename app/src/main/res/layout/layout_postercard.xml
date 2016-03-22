@@ -7,7 +7,10 @@
     card_view:cardElevation="10dp"
     card_view:cardCornerRadius="0dp"
     card_view:cardBackgroundColor="@color/posterCardBackground"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:focusable="true"
+    android:clickable="true"
+    style="@style/SelectableItemBackground" >
 
 
     <LinearLayout
