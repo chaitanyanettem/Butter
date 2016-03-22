@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     int bottomSheetState=-1;
     int posterW = 0;
     int spanCount = 0;
+    AppCompatActivity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         moviePosters.setLayoutManager(layoutManager);
         moviePosters.setItemAnimator(new DefaultItemAnimator());
 
-        popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
+        popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true, activity);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.d(TAG, "Load MOAR THINGS!!!");
-                popularMovies = new APICall(BASE_URL, endpoint, posterW, page, false);
+                popularMovies = new APICall(BASE_URL, endpoint, posterW, page, false, activity);
             }
         };
 
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             public void onRefresh() {
                 // Refresh items
                 mEndlessScrollListener.setCurrentPage(1);
-                popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
+                popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true, activity);
             }
         });
     }
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id != currentNavSelection) {
             currentNavSelection = id;
-            popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true);
+            popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true, this);
             mEndlessScrollListener.setCurrentPage(1);
             setTitle(activity_title);
         }

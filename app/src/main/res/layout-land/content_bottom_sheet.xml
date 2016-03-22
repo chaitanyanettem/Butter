@@ -153,7 +153,6 @@
                         android:layout_alignLeft="@+id/rating_label"
                         android:layout_alignStart="@+id/rating_label"/>
 
-
                     <TextView
                         android:id="@+id/rating_count"
                         android:layout_margin="1.5dp"

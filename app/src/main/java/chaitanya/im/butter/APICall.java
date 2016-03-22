@@ -2,19 +2,18 @@ package chaitanya.im.butter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import chaitanya.im.butter.Data.MovieDetail;
+import chaitanya.im.butter.Data.Result;
 import chaitanya.im.butter.activity.MainActivity;
 import chaitanya.im.butter.Data.MoviePopular;
 import chaitanya.im.butter.Data.MoviePopularResults;
@@ -43,11 +43,13 @@ public class APICall {
     int posterW;
     boolean _refresh;
     String trailerURL;
+    public final String TAG = "APICall.java";
 
-    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page, boolean refresh) {
+    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page, boolean refresh, AppCompatActivity activity) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
         this.posterW = posterW;
+        _activity = activity;
         _refresh = refresh;
         MainActivity.swipeRefreshLayout.setRefreshing(true);
 
@@ -74,7 +76,12 @@ public class APICall {
 
             @Override
             public void onFailure(Call<MoviePopular> call, Throwable t) {
-
+                Log.d(TAG, t.getMessage());
+                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) _activity.findViewById(R.id.coordinator_layout);
+                Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                        "There appears to be no Internet connection available.",
+                        Snackbar.LENGTH_INDEFINITE);
+                snackbar.show();
             }
         });
     }
@@ -108,7 +115,13 @@ public class APICall {
 
             @Override
             public void onFailure(Call<MovieDetail> call, Throwable t) {
-
+                Log.d(TAG, t.getMessage());
+                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) _activity.findViewById(R.id.coordinator_layout);
+                Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                        "There appears to be no Internet connection available.",
+                        Snackbar.LENGTH_INDEFINITE);
+                snackbar.show();
+                MainActivity.swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -124,14 +137,31 @@ public class APICall {
         final TextView description = (TextView) _activity.findViewById(R.id.bottomsheet_description);
         final NestedScrollView nestedScrollView = (NestedScrollView) _activity.findViewById(R.id.nestedScrollView);
         final NestedScrollView nestedDescription = (NestedScrollView) _activity.findViewById(R.id.nestedDescription);
+        final List<Result> videos = detail.getVideos().getResults();
+        final Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
+        final View view = _activity.findViewById(R.id.divider_under_trailer);
+        final TextView rating = (TextView) _activity.findViewById(R.id.rating);
+        final TextView ratingCount = (TextView) _activity.findViewById(R.id.rating_count);
 
-        trailerURL = "http://www.youtube.com/watch?v=" +
-                detail.getVideos().getResults().get(0).getKey();
+
+        // TODO: Consider putting trailer button on ImageView
+        if(videos.size()!=0) {
+            trailerURL = "http://www.youtube.com/watch?v=" +
+                    videos.get(0).getKey();
+
+            button.setVisibility(View.VISIBLE);
+            view.setVisibility(View.VISIBLE);
+        }
+        else {
+            button.setVisibility(View.GONE);
+            view.setVisibility(View.GONE);
+        }
 
         nestedScrollView.scrollTo(0, 0);
         nestedDescription.scrollTo(0,0);
+        rating.setText(detail.getVoteAverage().toString());
+        ratingCount.setText(detail.getVoteCount().toString() + " votes");
 
-        Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +184,7 @@ public class APICall {
         //toolbar.setTitle(detail.getTitle());
         //toolbar.inflateMenu(R.menu.bottomsheet_menu);
 
-        Log.d("APICall.java", "about to picasso");
+        Log.d(TAG, "about to picasso");
 
         String backdropURL = "https://image.tmdb.org/t/p/w780" + detail.getBackdropPath();
         Picasso.with(_context)
@@ -164,9 +194,9 @@ public class APICall {
                 .into(backdrop_image_view, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess(){
-                        Log.d("APICall.java", "Success");
                         MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         MainActivity.swipeRefreshLayout.setRefreshing(false);
+                        Log.d("APICall.java", "Success");
                     }
 
                     @Override
