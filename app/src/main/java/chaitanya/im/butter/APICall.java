@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -122,11 +123,13 @@ public class APICall {
         final TextView runningtime = (TextView) _activity.findViewById(R.id.bottomsheet_running_time);
         final TextView description = (TextView) _activity.findViewById(R.id.bottomsheet_description);
         final NestedScrollView nestedScrollView = (NestedScrollView) _activity.findViewById(R.id.nestedScrollView);
+        final NestedScrollView nestedDescription = (NestedScrollView) _activity.findViewById(R.id.nestedDescription);
 
         trailerURL = "http://www.youtube.com/watch?v=" +
                 detail.getVideos().getResults().get(0).getKey();
 
         nestedScrollView.scrollTo(0, 0);
+        nestedDescription.scrollTo(0,0);
 
         Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
         button.setOnClickListener(new View.OnClickListener() {
