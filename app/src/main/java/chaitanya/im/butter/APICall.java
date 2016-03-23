@@ -184,6 +184,10 @@ public class APICall {
         //toolbar.setTitle(detail.getTitle());
         //toolbar.inflateMenu(R.menu.bottomsheet_menu);
 
+
+        MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        MainActivity.swipeRefreshLayout.setRefreshing(false);
+
         Log.d(TAG, "about to picasso");
 
         String backdropURL = "https://image.tmdb.org/t/p/w780" + detail.getBackdropPath();
@@ -194,8 +198,6 @@ public class APICall {
                 .into(backdrop_image_view, new com.squareup.picasso.Callback() {
                     @Override
                     public void onSuccess(){
-                        MainActivity.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        MainActivity.swipeRefreshLayout.setRefreshing(false);
                         Log.d("APICall.java", "Success");
                     }
 
