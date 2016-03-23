@@ -2,6 +2,10 @@
 
 This app acts as a movie guide.
 
+## Instructions for building
+
+Add a TMDB API key to `app/src/main/java/chaitanya/im/butter/Keys.java`.
+
 ## Screenshots
 
 ![Main Screen](https://raw.githubusercontent.com/chaitanyanettem/Butter/master/Screenshots/Screenshot_20160322-155142.png)  
