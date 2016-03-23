@@ -136,7 +136,6 @@ public class APICall {
         final TextView runningtime = (TextView) _activity.findViewById(R.id.bottomsheet_running_time);
         final TextView description = (TextView) _activity.findViewById(R.id.bottomsheet_description);
         final NestedScrollView nestedScrollView = (NestedScrollView) _activity.findViewById(R.id.nestedScrollView);
-        final NestedScrollView nestedDescription = (NestedScrollView) _activity.findViewById(R.id.nestedDescription);
         final List<Result> videos = detail.getVideos().getResults();
         final Button button = (Button) _activity.findViewById(R.id.bottomsheet_trailer_button);
         final View view = _activity.findViewById(R.id.divider_under_trailer);
@@ -158,7 +157,6 @@ public class APICall {
         }
 
         nestedScrollView.scrollTo(0, 0);
-        nestedDescription.scrollTo(0,0);
         rating.setText(detail.getVoteAverage().toString());
         ratingCount.setText(detail.getVoteCount().toString() + " votes");
 
