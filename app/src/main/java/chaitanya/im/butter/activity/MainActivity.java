@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Log.d(TAG, "Load MOAR THINGS!!!");
+                Log.d(MainActivity.TAG, "Load MOAR THINGS!!!");
                 popularMovies = new APICall(BASE_URL, endpoint, posterW, page, false, activity);
             }
         };
@@ -151,15 +151,18 @@ public class MainActivity extends AppCompatActivity
     public static void updateGrid(boolean clear) {
         if (clear)
             data.clear();
-        for (int i = 0; i < popularMovies._results.size(); i++) {
-            data.add(new GridDataModel(
-                    popularMovies._results.get(i).getTitle(),
-                    popularMovies._results.get(i).getFinalPosterURL(),
-                    popularMovies._results.get(i).getFinalBackdropURL(),
-                    popularMovies._results.get(i).getReleaseDateString(),
-                    popularMovies._results.get(i).getId()));
+        if (popularMovies._results != null)
+        {
+            for (int i = 0; i < popularMovies._results.size(); i++) {
+                data.add(new GridDataModel(
+                        popularMovies._results.get(i).getTitle(),
+                        popularMovies._results.get(i).getFinalPosterURL(),
+                        popularMovies._results.get(i).getFinalBackdropURL(),
+                        popularMovies._results.get(i).getReleaseDateString(),
+                        popularMovies._results.get(i).getId()));
+            }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -277,7 +280,6 @@ public class MainActivity extends AppCompatActivity
         if (id != currentNavSelection) {
             currentNavSelection = id;
             popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true, this);
-            mEndlessScrollListener.setCurrentPage(1);
             setTitle(activity_title);
         }
 

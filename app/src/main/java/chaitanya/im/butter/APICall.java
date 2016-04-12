@@ -45,7 +45,8 @@ public class APICall {
     String trailerURL;
     public final String TAG = "APICall.java";
 
-    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page, boolean refresh, AppCompatActivity activity) {
+    public APICall(String BASE_URL, String endpoint, int posterW, @Nullable Integer page,
+                   boolean refresh, AppCompatActivity activity) {
         //http://api.themoviedb.org/3
         _BASE_URL = BASE_URL;
         this.posterW = posterW;
@@ -77,7 +78,8 @@ public class APICall {
             @Override
             public void onFailure(Call<MoviePopular> call, Throwable t) {
                 Log.d(TAG, t.getMessage());
-                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) _activity.findViewById(R.id.coordinator_layout);
+                CoordinatorLayout coordinatorLayout =
+                        (CoordinatorLayout) _activity.findViewById(R.id.coordinator_layout);
                 Snackbar snackbar = Snackbar.make(coordinatorLayout,
                         "There appears to be no Internet connection available.",
                         Snackbar.LENGTH_INDEFINITE);
@@ -177,7 +179,11 @@ public class APICall {
                 Integer.parseInt(sdate[1]) - 1,
                 Integer.parseInt(sdate[2]));
         datetext.setText(DateFormat.getDateInstance().format(calendar.getTime()));
-        runningtime.setText(detail.getRuntime().toString() + " minutes");
+        Integer runTime = detail.getRuntime();
+        if (runTime != null)
+            runningtime.setText(runTime.toString() + " minutes");
+        else
+            runningtime.setText("Movie Length Unknown");
         description.setText(detail.getOverview());
 
         //Toolbar toolbar =(Toolbar) _activity.findViewById(R.id.bottomsheet_toolbar);
