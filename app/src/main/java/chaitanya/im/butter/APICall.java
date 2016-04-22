@@ -89,14 +89,13 @@ public class APICall {
     }
 
     public APICall(String BASE_URL, String id, AppCompatActivity activity, Context context) {
-        //http://api.themoviedb.org/3
 
-        // Logging for retrofit
         _activity = activity;
         _context = context;
 
         MainActivity.swipeRefreshLayout.setRefreshing(true);
 
+        // Logging for retrofit
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -185,10 +184,6 @@ public class APICall {
         else
             runningtime.setText("Movie Length Unknown");
         description.setText(detail.getOverview());
-
-        //Toolbar toolbar =(Toolbar) _activity.findViewById(R.id.bottomsheet_toolbar);
-        //toolbar.setTitle(detail.getTitle());
-        //toolbar.inflateMenu(R.menu.bottomsheet_menu);
 
         Log.d(TAG, "about to picasso");
 
