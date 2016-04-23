@@ -36,4 +36,4 @@ captures/
 *.iml
 
 # Workspace.xml
-.idea/workspace.xml
+.idea/
