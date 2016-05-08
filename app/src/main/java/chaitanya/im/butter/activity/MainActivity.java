@@ -94,8 +94,10 @@ public class MainActivity extends AppCompatActivity
         View bottomSheet = findViewById(R.id.bottomSheet);
         coordinatorLayout = (CoordinatorLayout) bottomSheet;
 
+        //for bottomsheet to appear above toolbar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             coordinatorLayout.setElevation(R.dimen.appbar_elevation);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(currentNavSelection);
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onRefresh() {
                 // Refresh items
-                mEndlessScrollListener.setCurrentPage(1);
+                //mEndlessScrollListener.setCurrentPage(1);
                 popularMovies = new APICall(BASE_URL, endpoint, posterW, null, true, activity);
             }
         });
@@ -197,32 +199,6 @@ public class MainActivity extends AppCompatActivity
 
             else if (spanCount == 3 && density >= 240)
                 spanCount = 5;
-        }
-    }
-    // For autocalculating number of spans.
-    public class VarColumnGridLayoutManager extends GridLayoutManager {
-
-        private int minItemWidth;
-
-        public VarColumnGridLayoutManager(Context context, int minItemWidth) {
-            super(context, 1);
-            this.minItemWidth = minItemWidth;
-        }
-
-        @Override
-        public void onLayoutChildren(RecyclerView.Recycler recycler,
-                                     RecyclerView.State state) {
-            updateSpanCount();
-            super.onLayoutChildren(recycler, state);
-        }
-
-        private void updateSpanCount() {
-            Log.d("TAG", String.valueOf(getWidth()));
-            int spanCount = getWidth() / minItemWidth;
-            if (spanCount < 2) {
-                spanCount = 2;
-            }
-            this.setSpanCount(spanCount);
         }
     }
 
